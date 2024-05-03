@@ -2,76 +2,41 @@ package main
 
 import (
 	"fmt"
-	"net/http"
+	"log"
+	"os"
 
-	"github.com/gorilla/websocket"
+	"github.com/flambra/chat/internal"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/joho/godotenv"
 )
 
-var upgrader = websocket.Upgrader{
-	CheckOrigin: func(r *http.Request) bool {
-		return true
-	},
+func init() {
+	err := godotenv.Load("../.env")
+	if err != nil {
+		log.Fatal(err)
+	}
 }
-
-type Message struct {
-	Username string `json:"username"`
-	Message  string `json:"message"`
-}
-
-var clients = make(map[*websocket.Conn]bool)
-var broadcast = make(chan Message)
 
 func main() {
-	http.HandleFunc("/", homePage)
-	http.HandleFunc("/ws", handleConnections)
+	app := fiber.New()
+	app.Use(cors.New())
 
-	go handleMessages()
+	fiber.SetParserDecoder(fiber.ParserConfig{
+		IgnoreUnknownKeys: true,
+		ZeroEmpty:         true,
+	})
+	app.Static("/", "./public")
+	internal.InitializeRoutes(app)
 
-	fmt.Println("Server started on :8080")
-	err := http.ListenAndServe(":8084", nil)
+	port := os.Getenv("SERVER_PORT")
+	if len(port) == 0 {
+		port = "8080"
+	}
+
+	/* Start Server */
+	err := app.Listen(fmt.Sprintf(":%s", port))
 	if err != nil {
-		panic("Error starting server: " + err.Error())
-	}
-}
-
-func homePage(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Welcome to the Chat Room!")
-}
-
-func handleConnections(w http.ResponseWriter, r *http.Request) {
-	conn, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	defer conn.Close()
-
-	clients[conn] = true
-
-	for {
-		var msg Message
-		err := conn.ReadJSON(&msg)
-		if err != nil {
-			fmt.Println(err)
-			delete(clients, conn)
-			return
-		}
-
-		broadcast <- msg
-	}
-}
-
-func handleMessages() {
-	for {
-		msg := <-broadcast
-
-		for client := range clients {
-			err := client.WriteJSON(msg)
-			if err != nil {
-				fmt.Println(err)
-				client.Close()
-				delete(clients, client)
-			}
-		}
+		log.Fatal(err)
 	}
 }
