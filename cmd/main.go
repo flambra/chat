@@ -5,9 +5,9 @@ import (
 	"log"
 	"os"
 
+	"github.com/flambra/chat/database"
 	"github.com/flambra/chat/internal"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
 )
 
@@ -19,14 +19,19 @@ func init() {
 }
 
 func main() {
+	err := database.New()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer database.Disconnect()
+
 	app := fiber.New()
-	app.Use(cors.New())
 
 	fiber.SetParserDecoder(fiber.ParserConfig{
 		IgnoreUnknownKeys: true,
 		ZeroEmpty:         true,
 	})
-	app.Static("/", "./public")
+
 	internal.InitializeRoutes(app)
 
 	port := os.Getenv("SERVER_PORT")
@@ -35,8 +40,9 @@ func main() {
 	}
 
 	/* Start Server */
-	err := app.Listen(fmt.Sprintf(":%s", port))
+	err = app.Listen(fmt.Sprintf(":%s", port))
 	if err != nil {
 		log.Fatal(err)
 	}
+
 }
