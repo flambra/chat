@@ -2,17 +2,15 @@ package user
 
 import (
 	"context"
-	"time"
 
 	"github.com/flambra/chat/database"
 	"github.com/flambra/chat/internal/domain"
 	"github.com/flambra/helpers/hResp"
 	"github.com/gofiber/fiber/v2"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type UserCreateRequest struct {
-	UserID   uint   `json:"user_id"`
+	ID       uint   `json:"user_id"`
 	Username string `json:"username"`
 }
 
@@ -25,9 +23,8 @@ func Create(c *fiber.Ctx) error {
 	}
 
 	user = domain.User{
-		UserID:    request.UserID,
-		Username:  request.Username,
-		CreatedAt: primitive.NewDateTimeFromTime(time.Now()),
+		ID:       request.ID,
+		Username: request.Username,
 	}
 
 	collection := database.Get().Database.Collection("users")
