@@ -12,27 +12,36 @@ import (
 )
 
 func Delete(c *fiber.Ctx) error {
-	rawId := c.Params("id")
-	if rawId == "" {
-		return hResp.BadRequestResponse(c, "inform id")
+	conversationID := c.Params("id")
+	messageID := c.Params("message_id")
+
+	if conversationID == "" || messageID == "" {
+		return hResp.BadRequestResponse(c, "Both conversation ID and message ID must be informed")
 	}
 
-	id, err := primitive.ObjectIDFromHex(rawId)
+	convID, err := primitive.ObjectIDFromHex(conversationID)
 	if err != nil {
-		return hResp.BadRequestResponse(c, err.Error())
+		return hResp.BadRequestResponse(c, "Invalid conversation ID format")
+	}
+
+	msgID, err := primitive.ObjectIDFromHex(messageID)
+	if err != nil {
+		return hResp.BadRequestResponse(c, "Invalid message ID format")
 	}
 
 	collection := database.Get().Database.Collection("conversations")
 	filter := bson.M{
-		"_id":        id,
-		"deleted_at": nil,
+		"_id": convID,
+		"messages.message_id": msgID,
 	}
-	update := bson.M{"$set": bson.M{"deleted_at": time.Now()}}
+	update := bson.M{
+		"$set": bson.M{"messages.$.deleted_at": time.Now()},
+	}
 
 	_, err = collection.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
 		return hResp.InternalServerErrorResponse(c, err.Error())
 	}
 
-	return hResp.SuccessResponse(c, "User deleted successfully")
+	return hResp.SuccessResponse(c, "Message deleted successfully")
 }

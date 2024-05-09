@@ -16,7 +16,6 @@ import (
 
 var instance *domain.MongoDB
 
-// New cria uma nova conexão ao MongoDB e retorna uma instância
 func New() error {
 	uri := os.Getenv("MONGO_URI")
 	db := os.Getenv("MONGO_DB")

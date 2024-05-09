@@ -7,6 +7,7 @@ import (
 
 	"github.com/flambra/chat/database"
 	"github.com/flambra/chat/internal"
+	"github.com/flambra/chat/internal/watcher"
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
 )
@@ -24,6 +25,8 @@ func main() {
 		log.Fatal(err)
 	}
 	defer database.Disconnect()
+
+	go watcher.Init()
 
 	app := fiber.New()
 

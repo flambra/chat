@@ -15,14 +15,21 @@ type MessageUpdateRequest struct {
 }
 
 func Update(c *fiber.Ctx) error {
-	rawId := c.Params("id")
-	if rawId == "" {
-		return hResp.BadRequestResponse(c, "inform id")
+	conversationID := c.Params("id")
+	messageID := c.Params("message_id")
+
+	if conversationID == "" || messageID == "" {
+		return hResp.BadRequestResponse(c, "Both conversation ID and message ID must be informed")
 	}
 
-	id, err := primitive.ObjectIDFromHex(rawId)
+	convID, err := primitive.ObjectIDFromHex(conversationID)
 	if err != nil {
-		return hResp.BadRequestResponse(c, err.Error())
+		return hResp.BadRequestResponse(c, "Invalid conversation ID format")
+	}
+
+	msgID, err := primitive.ObjectIDFromHex(messageID)
+	if err != nil {
+		return hResp.BadRequestResponse(c, "Invalid message ID format")
 	}
 
 	var request MessageUpdateRequest
@@ -33,8 +40,9 @@ func Update(c *fiber.Ctx) error {
 
 	collection := database.Get().Database.Collection("messages")
 	filter := bson.M{
-		"_id":        id,
-		"deleted_at": nil,
+		"_id":                 convID,
+		"messages.message_id": msgID,
+		"deleted_at":          nil,
 	}
 	update := bson.M{"$set": bson.M{"content": request.Content}}
 
