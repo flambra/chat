@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/flambra/chat/internal/conversation"
+	"github.com/flambra/chat/internal/event"
 	"github.com/flambra/chat/internal/message"
 	"github.com/flambra/chat/internal/user"
 	"github.com/gofiber/fiber/v2"
@@ -34,4 +35,6 @@ func InitializeRoutes(app *fiber.App) {
 	app.Get("/message/:id", message.Read)
 	app.Put("/message/:id", message.Update)
 	app.Delete("/message/:id", message.Delete)
+
+	app.Get("/events", event.Broadcast)
 }

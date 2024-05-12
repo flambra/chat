@@ -4,7 +4,6 @@ go 1.22.2
 
 require (
 	github.com/flambra/helpers v0.0.0-20240428123922-db728cf55d05
-	github.com/gofiber/contrib/websocket v1.3.1
 	github.com/gofiber/fiber v1.14.6
 	github.com/gofiber/fiber/v2 v2.52.4
 	github.com/joho/godotenv v1.5.1
@@ -13,7 +12,6 @@ require (
 
 require (
 	github.com/andybalholm/brotli v1.1.0 // indirect
-	github.com/fasthttp/websocket v1.5.8 // indirect
 	github.com/gofiber/utils v0.0.10 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/google/uuid v1.6.0 // indirect
@@ -24,7 +22,6 @@ require (
 	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
-	github.com/savsgio/gotils v0.0.0-20240303185622-093b76447511 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.52.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
@@ -33,7 +30,6 @@ require (
 	github.com/xdg-go/stringprep v1.0.4 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20181117223130-1be2e3e5546d // indirect
 	golang.org/x/crypto v0.22.0 // indirect
-	golang.org/x/net v0.23.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/sys v0.19.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
