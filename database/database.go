@@ -1,5 +1,3 @@
-// internal/database/mongo.go
-
 package database
 
 import (
@@ -14,7 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var instance *domain.MongoDB
+var instance *domain.Mongo
 
 func New() error {
 	uri := os.Getenv("MONGO_URI")
@@ -36,7 +34,7 @@ func New() error {
 	}
 	log.Println("Connected to MongoDB!")
 
-	instance = &domain.MongoDB{
+	instance = &domain.Mongo{
 		Client:   client,
 		Database: client.Database(db),
 	}
@@ -44,21 +42,20 @@ func New() error {
 	return nil
 }
 
-func Get() *domain.MongoDB {
+func Get(collection string) *mongo.Collection {
 	if instance == nil {
 		max_attempts := 3
 		for attempt := 0; attempt < max_attempts; attempt++ {
 			log.Println("retrying connect... attempt: ", attempt)
 			New()
 			if instance != nil {
-				return instance
+				return instance.Database.Collection(collection)
 			}
 		}
 	}
-	return instance
+	return instance.Database.Collection(collection)
 }
 
-// Disconnect encerra a conexão com o MongoDB
 func Disconnect() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()

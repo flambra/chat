@@ -22,7 +22,7 @@ func Delete(c *fiber.Ctx) error {
 		return hResp.BadRequestResponse(c, err.Error())
 	}
 
-	collection := database.Get().Database.Collection("users")
+	collection := database.Get("users")
 	filter := bson.M{
 		"_id":        id,
 		"deleted_at": nil,

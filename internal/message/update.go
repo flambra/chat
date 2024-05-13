@@ -38,7 +38,7 @@ func Update(c *fiber.Ctx) error {
 		return hResp.BadRequestResponse(c, err.Error())
 	}
 
-	collection := database.Get().Database.Collection("messages")
+	collection := database.Get("messages")
 	filter := bson.M{
 		"_id":                 convID,
 		"messages.message_id": msgID,

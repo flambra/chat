@@ -26,7 +26,7 @@ func Create(c *fiber.Ctx) error {
 	participants := make([]domain.User, 2) // Limit 2 user per conversation
 
 	for i, userID := range request.Participants {
-		collection := database.Get().Database.Collection("users")
+		collection := database.Get("users")
 		var user domain.User
 		err := collection.FindOne(context.TODO(), bson.M{"_id": userID}).Decode(&user)
 		if err != nil {
@@ -39,7 +39,7 @@ func Create(c *fiber.Ctx) error {
 		Participants: participants,
 	}
 
-	collection := database.Get().Database.Collection("conversations")
+	collection := database.Get("conversations")
 	result, err := collection.InsertOne(context.TODO(), conversation)
 	if err != nil {
 		return hResp.InternalServerErrorResponse(c, err.Error())
@@ -48,5 +48,4 @@ func Create(c *fiber.Ctx) error {
 	conversation.ID = result.InsertedID.(primitive.ObjectID)
 
 	return hResp.SuccessCreated(c, &conversation)
-	// return hResp.SuccessCreated(c, &result)
 }

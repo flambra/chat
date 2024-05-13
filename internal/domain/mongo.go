@@ -2,7 +2,7 @@ package domain
 
 import "go.mongodb.org/mongo-driver/mongo"
 
-type MongoDB struct {
+type Mongo struct {
 	Client   *mongo.Client
 	Database *mongo.Database
 }

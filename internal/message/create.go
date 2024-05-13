@@ -38,7 +38,7 @@ func Create(c *fiber.Ctx) error {
 		SentAt:    time.Now(),
 	}
 
-	collection := database.Get().Database.Collection("conversations")
+	collection := database.Get("conversations")
 	filter := bson.M{"_id": conversationID}
 	update := bson.M{"$push": bson.M{"messages": message}}
 

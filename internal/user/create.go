@@ -27,7 +27,7 @@ func Create(c *fiber.Ctx) error {
 		Username: request.Username,
 	}
 
-	collection := database.Get().Database.Collection("users")
+	collection := database.Get("users")
 	_, err := collection.InsertOne(context.TODO(), user)
 	if err != nil {
 		return hResp.InternalServerErrorResponse(c, err.Error())

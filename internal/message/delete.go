@@ -29,9 +29,9 @@ func Delete(c *fiber.Ctx) error {
 		return hResp.BadRequestResponse(c, "Invalid message ID format")
 	}
 
-	collection := database.Get().Database.Collection("conversations")
+	collection := database.Get("conversations")
 	filter := bson.M{
-		"_id": convID,
+		"_id":                 convID,
 		"messages.message_id": msgID,
 	}
 	update := bson.M{

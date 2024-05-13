@@ -11,7 +11,7 @@ import (
 )
 
 func Init() {
-	collection := database.Get().Database.Collection("conversations")
+	collection := database.Get("conversations")
 
 	pipeline := mongo.Pipeline{
 		bson.D{{Key: "$match", Value: bson.D{{Key: "operationType", Value: "update"}}}},

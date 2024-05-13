@@ -24,7 +24,7 @@ func Read(c *fiber.Ctx) error {
 
 	var conversation domain.Conversation
 
-	collection := database.Get().Database.Collection("conversations")
+	collection := database.Get("conversations")
 	filter := bson.M{
 		"_id":        id,
 		"deleted_at": nil,
